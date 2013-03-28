@@ -18,6 +18,9 @@ require 'logger'
 require 'sinatra'
 require "sinatra/reloader" if development?
 
+require 'sidekiq'
+require 'redis'
+
 require 'erb'
 require 'twitter'
 require 'oauth'

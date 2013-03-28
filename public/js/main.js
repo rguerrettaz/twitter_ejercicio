@@ -14,6 +14,8 @@ function TweetForm(tweet) {
 	this.submitButton = "#send_tweet input[type='submit']";
 	this.textField = "#send_tweet input[type='text']";
 	this.msgPlace = ".msg-place";
+	this.jobId = "";
+	this.jobStatus = "false";
 }
 
 TweetForm.prototype.disable = function(){
@@ -42,20 +44,50 @@ TweetForm.prototype.clearTweetField = function(){
 	$(this.textField).val("");
 };
 
+
+TweetForm.prototype.jobStatusChecker = function(){
+	var theForm = this;
+	$.ajax({
+		url: '/status/'+ theForm.jobId +'',
+		type: 'get'
+	})
+	.done(function(data){
+		theForm.jobStatus = data;
+		console.log(theForm.jobStatus);
+		theForm.jobStatusLooper()
+	})
+	.fail(function(){
+		alert("Yo, this ish failed dawg");
+	});
+};
+
+TweetForm.prototype.jobStatusLooper = function(){
+	var theForm = this;
+	// while  (this.jobStatus == "false") {
+		if(this.jobStatus == "true"){
+			console.log("Done!");
+		}
+		else{
+			setTimeout( function(){ theForm.jobStatusChecker(); }, 10);
+		};
+// 	// console.log('loopy');
+// // };
+// 	alert("waiting...waiting...done dawg")
+};
+
 TweetForm.prototype.sendTweet = function(){
 	var theForm = this;
-	
 	$.ajax({
 		url: '/tweet',
 		type: 'post',
 		data: {tweet_content : this.tweet},
-		context: this,
 	})
 	 .done(function(data){
-	 	console.log(this);
-	 	theForm.removeDisabled();
-		theForm.sendTweetedMsg();
-		theForm.clearTweetField();
+	 	theForm.jobId = data
+	 	theForm.jobStatusLooper();
+	 // 	theForm.removeDisabled();
+		// theForm.sendTweetedMsg();
+		// theForm.clearTweetField();
 	})
 	 .fail(function(){
 	 	theForm.sendErrorMsg();

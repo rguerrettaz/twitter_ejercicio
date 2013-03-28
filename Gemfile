@@ -12,6 +12,8 @@ gem 'thin'
 
 gem 'activesupport'
 gem 'activerecord'
+gem 'sidekiq'
+gem 'redis'
 
 gem 'rake'
 gem 'twitter'

@@ -1,6 +1,9 @@
 before do
   @consumer = OAuth::Consumer.new(ENV['TWITTER_KEY'], ENV['TWITTER_SECRET'], {
     :site=>"https://api.twitter.com" })
+  puts ENV['TWITTER_KEY']
+  puts ENV['TWITTER_SECRET']
+  
 end
 
 get '/' do
@@ -9,6 +12,8 @@ get '/' do
 end
 
 get '/twitter_token' do
+  p request.host_with_port
+ 
   @request_token = @consumer.get_request_token(oauth_callback: "http://#{request.host_with_port}/oauth")
   session[:request_token] = @request_token
   redirect @request_token.authorize_url
@@ -21,35 +26,37 @@ get '/oauth' do
     :access_token => @access_token.token,
     :access_token_secret => @access_token.secret      
   }
-  @tweets = []
+  client
+  create_user
   erb :tweet
 end
 
+# post '/user' do
+#   @user = User.find_by_name(params[:username])
+#   begin
+#     @user = User.create(name: params[:username]) if Twitter.user(params[:username]) unless @user
+#   rescue
+#   end
+  
+#   if @user
+#     @user.fresh!
+#     @tweets = @user.tweets.order("created_at DESC")
+#   else
+#     @tweets = []
+#   end
+#   erb :index
+# end
 
-post '/tweet' do
+# Ajax routes related to tweets
 
-  @client = Twitter::Client.new(
-  :oauth_token => session[:oauth][:access_token],
-  :oauth_token_secret => session[:oauth][:access_token_secret]
-  )
-  puts @client.inspect
-  @client.update(params[:tweet_content])
-  erb :index
+post '/tweet' do   #sidekiq
+  current_user.tweet(params[:tweet_content])
 end
 
-post '/user' do
-  @user = User.find_by_name(params[:username])
-  begin
-    @user = User.create(name: params[:username]) if Twitter.user(params[:username]) unless @user
-  rescue
-  end
+get '/status/:job_id' do
   
-  if @user
-    @user.fresh!
-    @tweets = @user.tweets.order("created_at DESC")
-  else
-    @tweets = []
-  end
-  erb :index
+  p params[:job_id]
+  jobby = job_is_complete(params[:job_id]) ? "true" : "false"
+  jobby
 end
 
