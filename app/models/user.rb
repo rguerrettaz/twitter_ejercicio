@@ -4,9 +4,9 @@ class User < ActiveRecord::Base
   def tweet(status)
     tweet = Tweet.create(text: status)
     self.tweets << tweet
-    TweetWorker.perform_async(self.id, self.tweets.last.id)
+    # TweetWorker.perform_async(self.id, self.tweets.last.id)
+    TweetWorker.perform_in(30.seconds, self.id, self.tweets.last.id)
   end
-
 
   def fresh!
     tweets = Twitter.user_timeline(self.name).reverse if self.tweets.empty? || self.stale?

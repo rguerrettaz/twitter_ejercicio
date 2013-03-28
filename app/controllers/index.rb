@@ -54,9 +54,6 @@ post '/tweet' do   #sidekiq
 end
 
 get '/status/:job_id' do
-  
-  p params[:job_id]
-  jobby = job_is_complete(params[:job_id]) ? "true" : "false"
-  jobby
+  job_is_complete(params[:job_id]) ? "true" : "false"
 end
 

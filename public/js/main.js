@@ -3,7 +3,7 @@ $(document).ready(function(){
 		e.preventDefault();
 		var tweet = $("#send_tweet input[type='text']").val();
 		var myTweetForm = new TweetForm(tweet);
-		myTweetForm.disable();
+		// myTweetForm.disable();
 		myTweetForm.sendWorkingMsg();
 		myTweetForm.sendTweet();
 	});
@@ -63,16 +63,12 @@ TweetForm.prototype.jobStatusChecker = function(){
 
 TweetForm.prototype.jobStatusLooper = function(){
 	var theForm = this;
-	// while  (this.jobStatus == "false") {
 		if(this.jobStatus == "true"){
 			console.log("Done!");
 		}
 		else{
-			setTimeout( function(){ theForm.jobStatusChecker(); }, 10);
+			setTimeout( function(){ theForm.jobStatusChecker(); }, 2000);
 		};
-// 	// console.log('loopy');
-// // };
-// 	alert("waiting...waiting...done dawg")
 };
 
 TweetForm.prototype.sendTweet = function(){
