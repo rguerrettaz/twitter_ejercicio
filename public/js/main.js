@@ -3,7 +3,6 @@ $(document).ready(function(){
 		e.preventDefault();
 		var tweet = $("#send_tweet input[type='text']").val();
 		var myTweetForm = new TweetForm(tweet);
-		// myTweetForm.disable();
 		myTweetForm.sendWorkingMsg();
 		myTweetForm.sendTweet();
 	});
@@ -81,9 +80,6 @@ TweetForm.prototype.sendTweet = function(){
 	 .done(function(data){
 	 	theForm.jobId = data
 	 	theForm.jobStatusLooper();
-	 // 	theForm.removeDisabled();
-		// theForm.sendTweetedMsg();
-		// theForm.clearTweetField();
 	})
 	 .fail(function(){
 	 	theForm.sendErrorMsg();
